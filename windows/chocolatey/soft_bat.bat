@@ -1,3 +1,6 @@
+rem download and run
+rem curl https://raw.githubusercontent.com/posiyans/scrips/master/windows/chocolatey/soft_bat.bat --output %TEMP%\start.bat && %TEMP%\start.bat
+
 @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 @echo off
 set /P officeStandart='install word,excel,powerpoint and outlook??'
