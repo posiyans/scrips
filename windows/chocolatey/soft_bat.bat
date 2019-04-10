@@ -54,6 +54,6 @@ IF "%officeStandart%" == "y" (
 )
 
 IF "%localbat%" == "y" (
-    \\files\it\soft\install\start.bat
+    \\files.loc\it\soft\install\start.bat
 )
 pause
