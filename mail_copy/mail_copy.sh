@@ -125,7 +125,7 @@ def getTime(data):
     return dd
 
 
-def upload(mail, mailold):
+def upload(mail, mailold, mail_save = True):
     m1 = imaplib.IMAP4_SSL(mail[2], mail[3])
     m1.login(mail[0], mail[1])
     folder = './' + mailold + '/mail'
@@ -151,19 +151,20 @@ def upload(mail, mailold):
                 i += 1
                 print(str(i) + '->' + str(mail_count))
                 if not os.path.isfile('./' + mailold + '/restore/'+mail[0]+'/'+the_folder+'/'+the_file):
-                    thread = uploadThread(mail, mailold, the_folder, the_file)
+                    thread = uploadThread(mail, mailold, the_folder, the_file, mail_save)
                     thread.start()
                     while(threading.active_count() > 50):
                         time.sleep(0.1)
 
 
 class uploadThread(Thread):
-        def __init__(self, mail, mailold, folder, file):
+        def __init__(self, mail, mailold, folder, file, mail_save ):
             Thread.__init__(self)
             self.mail = mail
             self.folder = folder
             self.mailold = mailold
             self.file = file
+            self.mail_save = mail_save
 
         def run(self):
             m1 = imaplib.IMAP4_SSL(self.mail[2], self.mail[3])
@@ -181,12 +182,16 @@ class uploadThread(Thread):
             typ, data = m1.append(imap_utf7.encode(self.folder), flag, imaplib.Time2Internaldate(message_time), data)
             if typ == 'OK':
                 print('OK____________{0:^10}___thread count: {1:^10}'.format(self.file,threading.active_count()))
-                with open('./' + self.mailold + '/restore/'+mail[0]+'/'+self.folder+'/'+self.file, 'a') as f:
+                with open('./' + self.mailold + '/restore/'+self.mail[0]+'/'+self.folder+'/'+self.file, 'a') as f:
                     f.write('')
-
+                if not self.mail_save:
+                    with open('./' + self.mailold + '/mail/'+self.folder+'/'+self.file, 'w') as f:
+                        f.write('')
+                    if os.path.exists('./' + self.mailold + '/mail/'+self.folder+'/'+self.file+'.flag'):
+                        os.remove('./' + self.mailold + '/mail/'+self.folder+'/'+self.file+'.flag')
 
 if __name__ == "__main__":
     mail_old = ['user1@test.ru', 'password','imap.mail.ru', 993]
     download(mail_old)
     mail_new = ['user2@test.ru', 'password','imap.mail.ru', 993]
-    upload(mail_new, mail_old[0])
+    upload(mail_new, mail_old[0], True)
