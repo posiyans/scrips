@@ -27,6 +27,7 @@ pause
 IF "%AllowInsecureGuestAuth%" == "y" (
     reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation /v AllowInsecureGuestAuth /t reg_dword /d 00000001 /f
     reg add HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters /v AllowInsecureGuestAuth /t reg_dword /d 00000001 /f
+    reg add HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\LanmanWorkstation\Parameters /v RequireSecuritySignature /t reg_dword /d 00000000 /f
 )
 @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 choco install classic-shell -y
